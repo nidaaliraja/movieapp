@@ -1,23 +1,48 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from "react";
+import MovieSearch from "./MovieSearch";
+import MovieData from "./MovieData";
+import useMovieData from "./useMovieData";
+import "./App.css";
 
 function App() {
+  const [query, setQuery] = useState("");
+  const [searchTerm, setSearchTerm] = useState("Avengers");
+
+  const movieData = useMovieData(searchTerm);
+
+  const handleSearch = (e) => {
+    e.preventDefault();
+    setSearchTerm(query);
+  };
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
+    <div>
+      <header>
+        <h1>React IMDB</h1>
+        <nav>
+          <a href="#">TMDB</a>
+          <a href="#">GitHub</a>
+        </nav>
       </header>
+      <div className="search-bar">
+        <MovieSearch
+          query={query}
+          setQuery={setQuery}
+          handleSearch={handleSearch}
+        />
+      </div>
+      {movieData ? (
+        movieData.Response === "True" ? (
+          <div className="movie-details">
+            <MovieData movieData={movieData} />
+          </div>
+        ) : (
+          <p>Movie not found. Please try another search.</p>
+        )
+      ) : (
+        <div>Loading...</div>
+      )}
+      <div className="search-results">{/* Render search results here */}</div>
     </div>
   );
 }
